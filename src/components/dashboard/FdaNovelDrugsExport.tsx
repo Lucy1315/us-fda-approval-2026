@@ -20,6 +20,7 @@ import { format, startOfMonth, endOfMonth, subMonths, isWithinInterval, parseISO
 import { ko } from "date-fns/locale";
 import ExcelJS from "exceljs";
 import { cn } from "@/lib/utils";
+import { therapeuticAreaEnMap } from "@/data/therapeuticAreaMap";
 
 interface FdaNovelDrugsExportProps {
   data: DrugApproval[];
@@ -27,48 +28,6 @@ interface FdaNovelDrugsExportProps {
 }
 
 type ExportMode = "all" | "filtered" | "custom";
-
-// 치료영역 영문 매핑
-const therapeuticAreaEnMap: Record<string, string> = {
-  "항암제 - 다발골수종": "Oncology - Multiple Myeloma",
-  "항암제 - 림프종": "Oncology - Lymphoma",
-  "항암제 - 폐암": "Oncology - Lung Cancer",
-  "항암제 - 유방암": "Oncology - Breast Cancer",
-  "항암제 - 전립선암": "Oncology - Prostate Cancer",
-  "항암제 - 골전이": "Oncology - Bone Metastasis",
-  "항암제 - 위암": "Oncology - Gastric Cancer",
-  "항암제 - 간암": "Oncology - Liver Cancer",
-  "항암제 - 췌장암": "Oncology - Pancreatic Cancer",
-  "항암제 - 대장암": "Oncology - Colorectal Cancer",
-  "항암제 - 신장암": "Oncology - Renal Cancer",
-  "항암제 - 방광암": "Oncology - Bladder Cancer",
-  "항암제 - 흑색종": "Oncology - Melanoma",
-  "항암제 - 백혈병": "Oncology - Leukemia",
-  "소아과 - 대사질환": "Pediatrics - Metabolic Diseases",
-  "신경과 - 다발성 경화증": "Neurology - Multiple Sclerosis",
-  "신경과 - 알츠하이머병": "Neurology - Alzheimer's Disease",
-  "신경과 - 파킨슨병": "Neurology - Parkinson's Disease",
-  "신경과 - 멀미": "Neurology - Motion Sickness",
-  "신경과 - 신경복구": "Neurology - Nerve Repair",
-  "류마티스내과": "Rheumatology",
-  "소화기내과/류마티스내과": "Gastroenterology/Rheumatology",
-  "피부과/소화기내과": "Dermatology/Gastroenterology",
-  "혈액종양내과": "Hematology/Oncology",
-  "혈액내과": "Hematology",
-  "혈액내과 - 지중해빈혈": "Hematology - Thalassemia",
-  "혈액내과 - TA-TMA": "Hematology - TA-TMA",
-  "안과": "Ophthalmology",
-  "심장내과 - 심부전": "Cardiology - Heart Failure",
-  "심장내과 - 부정맥": "Cardiology - Arrhythmia",
-  "심장내과 - 심근병증": "Cardiology - Cardiomyopathy",
-  "내분비내과 - 골다공증": "Endocrinology - Osteoporosis",
-  "내과 - 영양결핍": "Internal Medicine - Nutritional Deficiency",
-  "통증의학과": "Pain Medicine",
-  "감염내과 - 성매개감염병": "Infectious Disease - STI",
-  "호흡기내과 - 천식": "Pulmonology - Asthma",
-  "면역학 - 유전자치료": "Immunology - Gene Therapy",
-  "피부과 - 건선": "Dermatology - Psoriasis",
-};
 
 // 승인유형 영문 매핑
 const getApprovalTypeEn = (drug: DrugApproval): string => {

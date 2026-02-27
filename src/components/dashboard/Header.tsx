@@ -2,8 +2,11 @@ import { useState } from "react";
 import { Calendar, Database, FileText, Cloud, CloudUpload, Loader2 } from "lucide-react";
 import { ExcelUpload } from "./ExcelUpload";
 import { FdaNovelDrugsExport } from "./FdaNovelDrugsExport";
+import { EmailExportDialog } from "./EmailExportDialog";
 import { FdaValidation } from "./FdaValidation";
+import { PendingApprovals } from "./PendingApprovals";
 import { UsageGuide } from "./UsageGuide";
+import { AdminLoginDialog } from "./AdminLoginDialog";
 import { DrugApproval } from "@/data/fdaData";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -15,9 +18,13 @@ interface HeaderProps {
   saveToCloud: (data: DrugApproval[], notes?: string) => Promise<boolean>;
   isFromCloud: boolean;
   cloudVersion: number | null;
+  cloudUpdatedAt: string | null;
+  isAdmin: boolean;
+  onAdminLogin: (password: string) => boolean;
+  onAdminLogout: () => void;
 }
 
-export function Header({ onDataUpdate, data, filteredData, saveToCloud, isFromCloud, cloudVersion }: HeaderProps) {
+export function Header({ onDataUpdate, data, filteredData, saveToCloud, isFromCloud, cloudVersion, cloudUpdatedAt, isAdmin, onAdminLogin, onAdminLogout }: HeaderProps) {
   const [isSaving, setIsSaving] = useState(false);
 
   const handleConfirm = async () => {
@@ -30,7 +37,8 @@ export function Header({ onDataUpdate, data, filteredData, saveToCloud, isFromCl
     try {
       const success = await saveToCloud(data, "데이터 확정");
       if (success) {
-        toast.success(`v${(cloudVersion || 0) + 1} 저장 완료! 대시보드가 갱신되었습니다.`);
+        const today = new Date().toISOString().slice(0, 10);
+        toast.success(`v${(cloudVersion || 0) + 1} 저장 완료! (${today}) 대시보드가 갱신되었습니다.`);
       } else {
         toast.error("클라우드 저장에 실패했습니다.");
       }
@@ -70,33 +78,44 @@ export function Header({ onDataUpdate, data, filteredData, saveToCloud, isFromCl
           
           <div className="flex items-center gap-1.5 text-muted-foreground">
             <Calendar className="h-4 w-4" />
-            <span>수집일: <strong className="text-foreground">2026-01-29</strong></span>
+            <span>수집일: <strong className="text-foreground">
+              {cloudUpdatedAt
+                ? new Date(cloudUpdatedAt).toISOString().slice(0, 10)
+                : "2026-01-29"}
+            </strong></span>
           </div>
           
           <div className="flex items-center gap-2">
             <UsageGuide />
-            <FdaValidation data={data} onDataUpdate={onDataUpdate} />
-            <FdaNovelDrugsExport data={data} filteredData={filteredData} />
-            <ExcelUpload onDataUpdate={onDataUpdate} currentData={data} />
-            <Button 
-              variant="default" 
-              size="sm" 
-              className="gap-2"
-              onClick={handleConfirm}
-              disabled={isSaving}
-            >
-              {isSaving ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  저장 중...
-                </>
-              ) : (
-                <>
-                  <CloudUpload className="h-4 w-4" />
-                  확정
-                </>
-              )}
-            </Button>
+            <AdminLoginDialog isAdmin={isAdmin} onLogin={onAdminLogin} onLogout={onAdminLogout} />
+            {isAdmin && (
+              <>
+                <PendingApprovals onDataUpdate={onDataUpdate} data={data} />
+                <FdaValidation data={data} onDataUpdate={onDataUpdate} />
+                <FdaNovelDrugsExport data={data} filteredData={filteredData} />
+                <EmailExportDialog data={data} filteredData={filteredData} />
+                <ExcelUpload onDataUpdate={onDataUpdate} currentData={data} />
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="gap-2"
+                  onClick={handleConfirm}
+                  disabled={isSaving}
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      저장 중...
+                    </>
+                  ) : (
+                    <>
+                      <CloudUpload className="h-4 w-4" />
+                      확정
+                    </>
+                  )}
+                </Button>
+              </>
+            )}
           </div>
         </div>
         
