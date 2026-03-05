@@ -208,14 +208,7 @@ function buildSummaryHtml(data: DrugApproval[], stats: DrugStats, period: string
             <p style="margin:8px 0 0;font-size:13px;font-family:${FONT};color:#e0e7ff;font-weight:600;">대상 기간: ${period}</p>
           </td>
           <td style="text-align:right;vertical-align:bottom;">
-            <!--[if mso]>
-            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="${DASHBOARD_URL}" style="height:34px;v-text-anchor:middle;width:140px;" arcsize="10%" stroke="t" strokecolor="#a5b4fc" fillcolor="#5b50d6">
-            <w:anchorlock/><center style="color:#ffffff;font-family:${FONT};font-size:12px;font-weight:bold;">대시보드 바로가기</center>
-            </v:roundrect>
-            <![endif]-->
-            <!--[if !mso]><!-->
             <a href="${DASHBOARD_URL}" target="_blank" style="display:inline-block;padding:8px 18px;background-color:#5b50d6;color:#ffffff;text-decoration:none;font-size:12px;font-family:${FONT};font-weight:700;border:1px solid #a5b4fc;">대시보드 바로가기</a>
-            <!--<![endif]-->
           </td>
         </tr>
       </table>
