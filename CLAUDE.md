@@ -86,9 +86,10 @@ supabase/
 ### 주의사항
 - `server/send-report.ts`와 `src/lib/generateSummaryHtml.ts`의 HTML 템플릿을 동기화할 것
 - 포트 3001이 이미 사용 중이면 이메일 서버 시작 실패 → 기존 프로세스 종료 후 재시작
+- 이메일 버튼/링크에 Outlook VML(`v:roundrect`) 사용 금지 — 클릭 안 되는 문제 있음. 일반 `<a>` 태그에 인라인 스타일로 버튼 구현할 것
 
 ## Git
 
 - 커밋 메시지 한국어
 - 브랜치: feature/, fix/, refactor/ 접두사
-- 원격 저장소 없음 (로컬 전용)
+- 원격 저장소: `https://github.com/Lucy1315/us-fda-approval-2026.git` (origin)
